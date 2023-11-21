@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <h3>Just Login</h3>
+  <h4>Login</h4>
+
+  <div class="datasErrors"></div>
+
+  <form action="/auth/login">
+    <div class="mb-3">
+      <label for="loginInputEmail" class="form-label">Email address</label>
+      <input type="email" class="form-control" id="loginInputEmail" name="email">
+    </div>
+    <div class="mb-3">
+      <label for="loginInputPassword" class="form-label">Password</label>
+      <input type="password" class="form-control" id="loginInputPassword" name="password">
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+
+</div>
+
+<script>
+  const form = document.querySelector('form')
+  const datasErrors = document.querySelector('.datasErrors')
+  
+  form.addEventListener('submit', async(e) => {
+    e.preventDefault()  
+    const email = form.email.value
+    const password = form.password.value
+
+    try {
+      const result = await fetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      const data = await result.json()
+      if (data.errors) {
+      let myErrors = ''
+      for ( let i = 0; i < data.errors.length; i++) {
+        console.log(data.errors[i].msg)
+        myErrors += `<div>${data.errors[i].msg}</div>`
+        }
+        datasErrors.innerHTML = myErrors 
+      }
+      if (data.user) {
+        console.log(data.user)
+        location.assign('/')
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  })
+</script>
+
+<%- include('../partials/footer') %>
