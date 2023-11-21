@@ -1,3 +1,5 @@
+database/just-login_DB.sqlite
 node_modules
 .env
+.gitignore
 package-lock.json
